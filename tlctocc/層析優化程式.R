@@ -1,9 +1,3 @@
-# 文獻中的死體積預測公式
-VMpred <- function (x){
-  1.8*x+0.3
-}
-
-
 # 階段沖堤的預測模型
 PRED <- function(x){
   VR <- c(0, 0, 0)
@@ -14,7 +8,7 @@ PRED <- function(x){
   RM <- log10(1/x-1)
   
   for (i in 1:length(VE)){
-    VRadj[i] <- P[i] * Ktr * (1/x[i]-1) * VM
+    VRadj[i] <- P[i] * Ktr * (1/(x[i]*RFadjF)-1) * VM
     
     if(VRadj[i]!=0){
       VR[i] <- VM + VRadj[i]}else{
@@ -67,17 +61,17 @@ DATA <- read.csv(filepath)
 
 
 # 設定死體積和理論板數
-VM <- VMpred(24)
-N <- 180
+VM <- DATA[1,6]
+N <- DATA[1,9]
 
 # 指定校正RF值時使用的倍率和Ktr值
-Ktr <- 1
-RFadjF <- 1.5
+Ktr <- DATA[1,7]
+RFadjF <- DATA[1,8]
 
 # 輸入各沖堤體積和對應的RF值
-VE <- c(90, 80, 75, 90, 80, 75, 84, 90)
-RFA <- c(0, 0.15, 0.23, 0.26, 0.45, 0.45, 0.47, 0.50)
-RFB <- c(0, 0.13, 0.17, 0.20, 0.37, 0.37, 0.43, 0.45)
+VE <- DATA[,3]
+RFA <- DATA[,4]
+RFB <- DATA[,5]
 
 # 預測A化合物滯留體積
 compoundA <- PRED(RFA)
